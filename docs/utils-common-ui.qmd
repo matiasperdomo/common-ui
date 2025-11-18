@@ -1,0 +1,140 @@
+---
+title: "Ficha rápida de utilidades — common-ui/src/utils/*"
+lang: es
+format:
+  html:
+    toc: true
+    theme: cosmo
+    highlight-style: atom-one   # ← resalta código con fondo gris
+  typst:
+    toc: true
+    code-block-bg: "#f6f8fa"    # ← fondo gris claro en PDF Typst
+    code-block-border: true
+    code-block-font-size: 9pt
+---
+
+# common-ui/src/utils/\*
+
+## `api.js` — Construcción de URLs para la API v1
+
+**Qué hace:** arma una URL completa contra la base `https://servicios3.abc.gob.ar/dti/api/v1` y añade parámetros de consulta de forma segura. Si se le pasa una URL absoluta, la respeta (no la vuelve a prefijar).\
+\
+**Export:** `buildApiUrl(pathOrUrl, params = {})`
+
+**Entradas / Salidas:**
+
+-   `pathOrUrl`: string. Puede ser ruta relativa (`'/home.menu/select'`) o URL absoluta (`'https://…/select'`).
+
+-   `params`: objeto plano con pares clave/valor (se serializan con `URLSearchParams`).
+
+-   Devuelve: string (URL final con querystring si corresponde).
+
+**Cuándo usarlo:**
+
+-   En hooks/servicios que consultan endpoints del *proxy* `/api-home` o la API v1 directa, cuando se prefiere construir la URL completa en un único paso antes de `fetch`.
+
+**Ejemplo:**
+
+``` js
+import { buildApiUrl } from 'common-ui';
+
+const url = buildApiUrl('/home.menu/select', { q: '*:*', rows: 200, wt: 'json' });
+// fetch(url, { headers: { Accept: 'application/json' } }) 
+```
+
+------------------------------------------------------------------------
+
+## `drupal.js` — Normalización de URLs (archivos y navegación)
+
+Este archivo concentra **toda la lógica de URLs** que provienen de Drupal (archivos) y normaliza también `href` de navegación.
+
+**Exports principales:**
+
+-   `PUBLIC_FILE_BASE`: base pública de archivos (`…/sites/default/files/`).
+
+-   `fromPublicUri(uri, base = PUBLIC_FILE_BASE)`: convierte `public://…` a URL pública.
+
+-   `toAbsolute(u)`: **normaliza archivos/medios** y URLs crudas:
+
+    -   `data:*` → la deja tal cual.
+
+    -   `private://*` → bloquea (cadena vacía).
+
+    -   `public://*` → mapea a `PUBLIC_FILE_BASE`.
+
+    -   `/sites/...` o `sites/...` → absolutiza con `https://abc.gob.ar`.
+
+    -   `//host/...` → fuerza `https:`.
+
+    -   `http://…` → fuerza `https://`.
+
+    -   otro → devuelve tal cual.
+
+-   `toHref(u)`: **normaliza enlaces de navegación**:
+
+    -   `//…` → `https://…`
+
+    -   `http://…` → `https://…`
+
+    -   `/ruta` → `https://abc.gob.ar/ruta`
+
+    -   `mailto:, tel:, data:, https://…` → lo deja igual.
+
+**Cuándo usar cada una:**
+
+-   `toAbsolute` → para **imágenes y archivos** que vienen del CMS/índices.
+
+-   `toHref` → para **links** (URLs de menú, botones, CTA, etc.).
+
+**Ejemplos:**
+
+``` js
+import { toAbsolute, toHref } from 'common-ui';
+
+// Imagen principal
+const img = toAbsolute(doc.imagen_principal_url);
+
+// Link de “Ver más”
+const href = toHref(doc.url || '/noticias');
+```
+
+------------------------------------------------------------------------
+
+## `slug.js` — Slugs y alias
+
+**Qué hace:** provee utilidades para generar y resolver *slugs* (y para construir filtros de búsqueda por slug cuando el backend lo necesita).
+
+**Exports:**
+
+-   `slugify(text)`: convierte un título a slug “kebab-case” (sin acentos, sin símbolos).
+
+-   `getSlugFromAliasOrTitle({ alias, path_alias, titulo, titulo_url })`: devuelve el último segmento del alias si existe (ej. `/noticias/mi-titulo` → `mi-titulo`), sino deriva del título.
+
+-   `buildSlugFq(slug)`: construye una condición OR para buscar por slug en el *endpoint* (si no hay campo slug explícito). Ajusta los nombres de campos si el backend usa otros.
+
+**Cuándo usarlo:**
+
+-   En rutas de **detalle** (resolver `:slug` contra datos).
+
+-   Al construir queries de búsqueda por slug (si el índice/endpoint aún no expone un campo slug único).
+
+**Ejemplos:**
+
+``` js
+import { slugify, getSlugFromAliasOrTitle, buildSlugFq } from 'common-ui';
+
+const slug = getSlugFromAliasOrTitle(doc); // usar alias si está; sino, slugify(titulo)
+const fq = buildSlugFq(slug);              // para filtrar en la consulta (si aplica)
+```
+
+------------------------------------------------------------------------
+
+## Recomendaciones de uso (resumen operativo)
+
+-   **Archivos / imágenes:** `toAbsolute()`
+
+-   **Enlaces / navegación:** `toHref()`
+
+-   **Construcción de URL a API v1:** `buildApiUrl()`
+
+-   **Slugs y alias:** `slugify()`, `getSlugFromAliasOrTitle()`, `buildSlugFq()`

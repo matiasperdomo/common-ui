@@ -1,0 +1,249 @@
+/* common-ui/src/components/footer/Footer.module.css
+   Footer desktop + mobile (logo arriba y acordeón en móvil)
+   - Usa tokens globales directamente (sin alias locales).
+*/
+
+/* ================== Base / paleta ================== */
+.footer {
+  background-color: var(--bg-muted);
+  border-top: 1px solid var(--border-color);
+  color: var(--text-color);
+}
+
+/* ================== Logo ================== */
+/* Desktop: logo controlado y blindado ante .img-fluid */
+.footer .footerLogo,
+.footer .footer-logo {                    /* alias por compatibilidad */
+  display: block;
+  width: auto !important;
+  height: auto !important;
+  max-width: 120px !important;           /* tamaño desktop */
+}
+
+
+/* ================== Enlaces / tipografía ================== */
+.footer-link,
+.footer a {
+  color: var(--text-color);
+  text-decoration: none;
+}
+.footer-link:hover,
+.footer a:hover,
+.footer-link:focus,
+.footer a:focus {
+  color: var(--link-color);              /* institucional */
+  text-decoration: underline;
+}
+
+/* Foco accesible consistente con tokens */
+.footer a:focus-visible,
+.accordionBtn:focus-visible {
+  outline: 0;
+  box-shadow: var(--focus-ring);
+}
+
+/* Titulares y listas */
+.footer-heading {
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+  margin: 0 0 1rem 0;
+  color: var(--text-color);
+}
+.footer-item { margin: .5rem 0; line-height: 1.7; }
+.footer-section { margin-bottom: 1.25rem; }
+
+/* ================== Redes sociales ================== */
+/* Desktop y MOBILE visibles (se quita el hide en mobile) */
+.footer-social { margin-top: 1rem; min-height: 34px; }
+
+/* ================== Acordeón (solo mobile) ================== */
+.accordionBtn {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  padding: .75rem 0;
+  margin: 0;
+  text-align: left;
+  color: var(--text-color);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Título activo con color institucional */
+.accordionBtn[aria-expanded="true"] {
+  color: var(--link-color);
+}
+
+/* Chevron: ↓ cerrado / ↑ abierto */
+.chevron {
+  display: inline-block;
+  width: .65rem;
+  height: .65rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);              /* ↓ cerrado */
+  transition: transform .2s ease-in-out;
+}
+.chevronOpen {
+  transform: rotate(-135deg);            /* ↑ abierto */
+}
+
+/* Panel colapsable (sin JS de Bootstrap) */
+.accordionPanel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .25s ease;
+}
+.panelOpen { max-height: 1000px; }       /* valor amplio para el contenido */
+
+/* ================== Ajustes de compatibilidad ================== */
+/* Evitar que utilidades “apaguen” el color del footer */
+.footer .text-muted {
+  color: var(--text-color) !important;
+  opacity: 1 !important;
+}
+
+/* Respeta preferencias de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  .chevron { transition: none; }
+  .accordionPanel { transition: none; }
+}
+
+/* Logo responsive — mantiene proporción */
+.footerLogoMobile {
+  display: inline-block;        /* respeta el tamaño que le des */
+  width: clamp(220px, 60vw, 360px);
+  height: auto;                 /* mantiene aspecto */
+}
+
+/* < md */
+@media (max-width: 767.98px) { /* reglas móviles */ }
+
+/* sm-only (576–767) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  /* Reordenar sin tocar JSX (solo layout) */
+  :global(.d-md-none) {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+  }
+  /* Logo */
+  :global(.d-md-none) > :global(.text-center) { order: 1; }
+  /* Redes (div con clase local .footer-social) */
+  :global(.d-md-none) > :local(.footer-social) { order: 2; justify-content: center; }
+  /* Acordeón */
+  :global(.d-md-none) > ul { order: 3; }
+
+  /* Acordeones en 3 columnas  */
+  .accordionList {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  /* Neutraliza el margen del li en este rango para que cuadren las 3 columnas */
+  .accItem { margin: 0; }
+
+  .accordionBtn,
+  .accordionPanel {
+    border: 0;
+    box-shadow: none;
+    background: transparent;
+    padding-left: 0;
+    padding-right: 0;
+  }
+   /* Títulos de cada acordeón (botón) */
+  .accordionBtn {
+    /* texto más chico pero legible */
+    font-size: clamp(.80rem, .78rem + .2vw, .9rem);
+    line-height: 1.25;
+    padding: .5rem .5rem;
+    min-height: 44px; /* accesible */
+  }
+  /* Contenido del acordeón (cuando se abre) */
+  .accordionPanel {
+    font-size: clamp(.76rem, .74rem + .2vw, .88rem);
+    line-height: 1.35;
+    padding-left: .5rem;
+    padding-right: .5rem;
+  }
+  /* Ítems y enlaces internos */
+  .footer-item { margin-bottom: .25rem; }
+  .footer-link { font-size: clamp(.76rem, .74rem + .2vw, .88rem); }
+
+  /* Encabezados (si usás heading dentro del panel) */
+  .footer-heading {
+    font-size: clamp(.78rem, .76rem + .2vw, .92rem);
+    line-height: 1.2;
+  }
+  .footerLogoMobile {
+    width: clamp(260px, 50vw + 80px, 420px);
+  }
+}
+/* ≥768px (md) */
+@media (min-width: 768px) {
+  .footerLogo {                
+    width: auto;
+    max-width: 120px;
+    height: auto;
+  }
+}
+/* ===== md-only (768–991.98): 4 columnas + tipografía compacta + logo desktop ===== */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  /* Convertimos la fila desktop en grid de 4 */
+  .footer :global(.d-md-block) :global(.row) {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    /* usa el gutter de Bootstrap si existe; si no, cae en 1rem */
+    gap: var(--bs-gutter-x, 1rem) var(--bs-gutter-y, 1rem);
+    margin-left: 0;  /* neutraliza márgenes negativos de .row */
+    margin-right: 0;
+  }
+
+  /* Neutralizar el sizing de las columnas Bootstrap dentro del grid */
+  .footer :global(.d-md-block) :global(.row) > [class*="col-"] {
+    flex: none !important;
+    max-width: none !important;
+    width: auto !important;
+    padding-left: 0;   /* el gap del grid ya genera separación */
+    padding-right: 0;
+  }
+
+  /* Logo desktop un poco más compacto para ganar aire */
+  .footer .footerLogo {
+    max-width: 110px !important;
+    height: auto !important;
+  }
+
+  /* Tipografía/espaciado más compacto en este rango */
+  .footer .footer-heading {
+    font-size: clamp(.9rem, .84rem + .3vw, .98rem);
+    margin-bottom: .75rem;
+    line-height: 1.2;
+  }
+  .footer .footer-item { margin: .25rem 0; line-height: 1.5; }
+  .footer .footer-link { font-size: clamp(.86rem, .8rem + .25vw, .96rem); }
+  .footer .footer-social { margin-top: .5rem; }
+}
+
+
+/* ≥992px (lg) */
+@media (min-width: 992px) {
+  /* Ajustes finos de grillas/gaps si el layout se “estira” */
+}
+
+/* ≥1200px (xl) */
+@media (min-width: 1200px) {
+  /* Detalles tipográficos/espaciados si aplica */
+}
+
+/* ≥1400px (xxl) */
+@media (min-width: 1400px) {
+  /* Límites máximos, respiración extra en contenedores si hace falta */
+}
+

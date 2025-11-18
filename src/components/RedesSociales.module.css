@@ -1,0 +1,70 @@
+/* Presentación 100% en CSS (sin props de estilo) */
+.wrapper {
+  display: flex;
+  align-items: center;
+  flex-direction: row;     /* Footer: horizontal */
+  flex-wrap: nowrap;       /* en footer queremos una sola línea */
+  gap: 0.5rem;             /* más juntos */
+  --icon-size: 30px;       /* tamaño por defecto (footer) */
+}
+
+/* Skeleton: usa el mismo tamaño que los íconos reales */
+.skeleton {
+  display: inline-block;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  border-radius: 50%;
+}
+
+/* Ícono: redondeado, opacidad base y transición (footer por defecto) */
+.icon {
+  display: block;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  border-radius: 50%;
+  opacity: 0.8;
+  transition: opacity .2s ease-in-out, filter .2s ease-in-out, transform .15s ease-in-out;
+  cursor: pointer;
+}
+
+/* Hover/Focus accesible */
+.clickable { cursor: pointer !important; }
+.clickable:hover .icon,
+.clickable:focus-visible .icon { opacity: 1; }
+.clickable:active .icon { transform: scale(0.98); }
+
+/* Filtros por alt (case-insensitive) */
+.wrapper :global(img[alt~="Facebook" i])  { filter: hue-rotate(125deg); }
+.wrapper :global(img[alt~="Twitter"  i])  { filter: hue-rotate(116deg) saturate(0.4) brightness(0.9); }
+.wrapper :global(img[alt~="X"        i])  { filter: hue-rotate(119deg) brightness(0.6); }
+.wrapper :global(img[alt*="Instagram" i]) { filter: hue-rotate(35deg) brightness(0.7); }
+.wrapper :global(img[alt~="Flickr"   i])  { filter: hue-rotate(14deg) brightness(0.9); }
+
+/* =========================
+   Variante: columna derecha (Home)
+   - Íconos más grandes
+   - Sin borde redondeado
+   - Permite envolver en varias líneas si hace falta
+   ========================= */
+.sidebar {
+  --icon-size: 35px; /* más grande en Home */
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.sidebar .icon {
+  border-radius: 0;         /* sin redondeo */
+}
+
+.sidebar .skeleton {
+  border-radius: 0;         /* skeleton también sin redondeo */
+}
+
+/* Área clickeable más robusta (opcional) */
+.link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

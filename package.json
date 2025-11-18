@@ -1,0 +1,28 @@
+{
+  "name": "common-ui",
+  "version": "1.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js",
+    "./globals": "./src/globals.js"
+  },
+  "module": "./dist/index.js",
+  "files": [
+    "dist",
+    "src/styles/tokens.css",
+    "src/globals.js"
+  ],
+  "sideEffects": [
+    "./src/styles/tokens.css"
+  ],
+  "peerDependencies": {
+    "react": ">=18",
+    "react-bootstrap": ">=2",
+    "react-dom": ">=18"
+  },
+  "scripts": {
+    "build": "vite build",
+    "build:watch": "vite build --watch"
+  }
+}
+

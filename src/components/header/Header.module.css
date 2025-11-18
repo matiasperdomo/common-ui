@@ -1,0 +1,298 @@
+/* src/components/header/Header.module.css */
+
+/* =========================================
+   Header (common-ui)
+   Secciones: Alerta / Logos / Menú / Buscador
+   ========================================= */
+
+/* 1) Barra de alerta */
+.alerta {
+  background-color: #fff3cd;
+  color: #664d03;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.logo-abc {
+  width: auto;
+  max-height: 40px;
+}
+
+/* Collapse debe poder encogerse y partir línea en mobile */
+.collapseFlex {
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* (Opcional) overflow control por tamaño */
+.headerRoot { overflow-x: visible; }
+@media (max-width: 991.98px) {
+  .headerRoot { overflow-x: hidden; }
+}
+
+/* 3) Menú */
+.menu-navbar {
+  --menu-fg: var(--bs-link-color, #1aa7b8);
+  --menu-fg-hover: var(--bs-link-color, #1aa7b8);
+  --menu-bg: #fff;
+
+  background-color: var(--menu-bg);
+  color: var(--menu-fg);
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Nivel 1 */
+.menu-navbar :global(.navbar-nav) > :global(.nav-link),
+.menu-navbar :global(.navbar-nav) > :global(.nav-item) > :global(.nav-link),
+.menu-navbar :global(.navbar-nav) > :global(.nav-item) > :global(.dropdown-toggle) {
+  font-size: var(--menu-parent-size, 1.1rem);
+  font-weight: var(--menu-parent-weight, 700);
+  line-height: 1.1;
+  padding: 0.9rem 1rem;
+}
+
+/* Links heredan color */
+.menu-navbar :global(.navbar-nav) :global(.nav-link),
+.menu-navbar :global(.dropdown-item) {
+  color: currentColor;
+  text-decoration: none;
+}
+
+.menu-navbar :global(.dropdown-menu) {
+  border: 0px;
+}
+/* Hover / focus */
+.menu-navbar :global(.navbar-nav) :global(.nav-link:hover),
+.menu-navbar :global(.navbar-nav) :global(.nav-link:focus),
+.menu-navbar :global(.dropdown-item:hover),
+.menu-navbar :global(.dropdown-item:focus) {
+  color: var(--menu-fg-hover);
+  text-decoration: underline;
+}
+
+/* Caret del dropdown */
+.menu-navbar :global(.dropdown-toggle)::after {
+  border-top-color: currentColor;
+}
+
+/* Dropdown spacing */
+.menu-navbar :global(.dropdown-item) {
+  padding: .55rem 1rem;
+}
+
+/* Clases que usa Menu.jsx */
+.menu-link,
+.menu-item,
+.menu-dropdown {
+  color: inherit;
+}
+
+/* 4) Buscador */
+.buscador {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.buscador-box {
+  position: relative;
+  max-width: 100%;
+  width: clamp(260px, 30vw, 520px);
+  background-color: var(--bg-muted, #f1f3f5);
+  border: 1px solid var(--border-color, #e1e5ea);
+  border-radius: 4px;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.buscador-input {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  outline: none;
+  padding: 10px 40px 10px 14px;
+  font-size: 1rem;
+  color: var(--text-color, #4a5560);
+}
+.buscador-input::placeholder {
+  color: var(--text-color-muted, #7a8791);
+}
+
+.buscador-box:focus-within {
+  border-color: var(--bs-link-color, #1aa7b8);
+  box-shadow: var(--focus-ring, 0 0 0 .2rem rgba(26,167,184,.15));
+}
+
+/* Botón lupa */
+.buscador-btn {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+.buscador-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: var(--bs-link-color, #1aa7b8);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Responsive: buscador ancho completo en mobile */
+@media (max-width: 991.98px) {
+  .buscador { width: 100%; margin-top: .5rem; }
+  .buscador-box { width: 100%; }
+  .menu-navbar { --item-gutter: 8px; } /* margen lateral */
+
+  .menu-navbar :global(.navbar-collapse),
+  .menu-navbar :global(.navbar-nav),
+  .menu-navbar :global(.navbar-nav > .nav-item) {
+    width: 100%;
+  }
+
+   /* Hover nivel 1: fondo institucional + texto blanco */
+  .menu-navbar :global(.navbar-nav > .nav-item > .nav-link:hover),
+  .menu-navbar :global(.navbar-nav > .nav-item > .dropdown-toggle:hover),
+  .menu-navbar :global(.navbar-nav > .nav-item > .nav-link:focus),
+  .menu-navbar :global(.navbar-nav > .nav-item > .dropdown-toggle:focus),
+  .menu-navbar :global(.navbar-nav > .nav-link:hover),
+  .menu-navbar :global(.navbar-nav > .nav-link:focus)
+   {
+    background-color: var(--link-color, #009AAE);
+    color: #fff !important;
+    text-decoration: none;
+  }
+
+  /* Submenú: ancho alineado con el nivel 1 y color institucional */
+  .menu-navbar :global(.dropdown-menu) {
+    position: static !important;
+    float: none;
+    width: calc(100% - (var(--item-gutter) * 2));
+    margin: 0 var(--item-gutter) .5rem;
+    border-radius: 0;
+  }
+  .menu-navbar :global(.dropdown-menu .dropdown-item) {
+    color: var(--link-color, #009AAE);
+  }
+  .menu-navbar :global(.dropdown-menu .dropdown-item:hover),
+  .menu-navbar :global(.dropdown-menu .dropdown-item:focus) {
+    background-color: rgba(0,154,174,.10);
+    color: var(--link-color, #009AAE);
+    text-decoration: underline;
+  }
+}
+
+/* Layout centrado + caja cuadrada sin pintar */
+.headerRedes .redesInline {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* 320–575 */
+  gap: 12px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.headerRedes .redesInline li { flex: 0 0 auto; line-height: 0; }
+.headerRedes .redesInline a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  margin-bottom: 50%;
+  
+  border: 0;
+  text-decoration: none;
+}
+.headerRedes .redesInline img,
+.headerRedes .redesInline svg {
+  width: 35px;
+  height: 35px;
+  border-radius: 0!important;  
+  display: block;
+  object-fit: contain;
+  
+}
+.headerRedes .icon{
+  border-radius: 0;
+}
+@media (min-width: 576px) {
+  .headerRedes .redesInline { justify-content: flex-start; }
+}
+
+/* Toggler (hamburguesa) con color institucional */
+.menu-navbar :global(.navbar-toggler) {
+  border-color: var(--link-color);
+  box-shadow: none;
+}
+.menu-navbar :global(.navbar-toggler:focus) {
+  box-shadow: var(--focus-ring, 0 0 0 .2rem rgba(0,154,174,.25));
+}
+
+
+/* (Opcional) hover/active un poco más intenso */
+.menu-navbar :global(.navbar-toggler:hover),
+.menu-navbar :global(.navbar-toggler:active) {
+  border-color: #00889a;
+}
+
+/* ====== Hover menú principal + color en subitems ====== */
+.menu-navbar { --brand-teal: var(--link-color, #009AAE); }
+
+/* Nivel 1: hover con fondo institucional y texto blanco */
+.menu-navbar :global(.navbar-nav > .nav-item > .nav-link:hover),
+.menu-navbar :global(.navbar-nav > .nav-item > .nav-link:focus),
+.menu-navbar :global(.navbar-nav > .nav-item > .dropdown-toggle:hover),
+.menu-navbar :global(.navbar-nav > .nav-item > .dropdown-toggle:focus) {
+  background-color: var(--brand-teal);
+  color: #fff !important;
+  text-decoration: none;
+  border-radius: .125rem; /* suave; quita si no lo querés */
+}
+
+/* Submenú: texto con color institucional */
+.menu-navbar :global(.dropdown-menu .dropdown-item) {
+  color: var(--brand-teal);
+}
+
+/* Submenú: hover sutil (opcional) */
+.menu-navbar :global(.dropdown-menu .dropdown-item:hover),
+.menu-navbar :global(.dropdown-menu .dropdown-item:focus) {
+  background-color: rgba(0,154,174,.10);
+  color: var(--brand-teal);
+  text-decoration: underline;
+}
+
+/* ===== Desktop (lg+)  ===== */
+@media (min-width: 992px) {
+  .logo-provincia {
+    max-width: 60%;
+  }
+  .logo-abc {
+    margin-right: 40px;
+  }
+  .menu-navbar {
+    border-bottom: 1px solid var(--menu-divider, #e6e9ed);
+  }
+  .buscador-box {
+    max-width: 90%;
+    float: right;
+  }
+  .menu-navbar :global(.dropdown-menu) {
+    border: var(--bs-dropdown-border-width) solid var(--bs-dropdown-border-color);
+  }
+}

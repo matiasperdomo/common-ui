@@ -1,0 +1,115 @@
+/* Fondo dividido (gris arriba / blanco abajo) */
+.wrapper {
+  --split-height: 280px;
+  --split-top: var(--bs-gray-100);
+  --split-bottom: var(--bs-body-bg);
+
+  /* Panel y layout */
+  --panel-top-gap: 1.5rem;     /* separación superior antes del breadcrumb/columnas */
+  --panel-bottom-gap: 2rem;
+  --panel-min-h: 60vh;         /* altura mínima del panel */
+
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  overflow-x: clip; /* evita scroll horizontal (fallback abajo) */
+}
+
+.wrapper::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+
+  /* full-bleed seguro (sin scroll horizontal) */
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+
+  background:
+    linear-gradient(
+      to bottom,
+      var(--split-top) 0 var(--split-height),
+      var(--split-bottom) var(--split-height) 100%
+    );
+}
+@supports not (overflow-x: clip) {
+  .wrapper { overflow-x: hidden; }
+}
+/* Banda full-bleed que contiene breadcrumb + grid */
+.panel-row {
+  position: relative;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  padding-top: var(--panel-top-gap);
+  padding-bottom: var(--panel-bottom-gap);
+  overflow-x: clip; /* recorta cualquier desborde del full-bleed */
+}
+
+/* Breadcrumb sobre el gris */
+.breadcrumb-row {
+  margin-bottom: 1.25rem;
+  padding: 0 1rem; /* leve respiración en móviles */
+  margin-left: 4rem;
+}
+
+/* GRID 2 columnas: izquierda panel blanco (≈9), derecha sidebar (≈3) */
+.panel-grid {
+  display: grid;
+  grid-template-columns: 1fr;     /* móvil: una debajo de otra */
+  gap: 1.25rem;
+  align-items: stretch;           /* mismas alturas */
+  padding-left: 0;                /* izquierda a sangre */
+  padding-right: 0;            /* respiración derecha en móviles */
+  margin-left: 3rem;
+}
+
+/* Columna izquierda: panel blanco con borde derecho redondeado */
+.panel-left {
+  background: #ffffff;
+  border-radius: 0 32px 32px 0;   /* redondeo solo a la derecha */
+  box-shadow: 0 8px 24px rgba(0,0,0,.08);
+  overflow: hidden;
+  min-height: var(--panel-min-h);
+  width: 100%;
+}
+
+/* Contenido interno del panel (aquí sueles pasar "container py-4") */
+.panel-inner {}
+
+/* Columna derecha: contenido sobre fondo gris */
+.panel-right {
+  min-height: var(--panel-min-h);
+  width: 100%;
+  /* sin fondo para que se vea el gris del split */
+}
+
+/* Breakpoints: md y lg ajustan 9/3 */
+@media (min-width: 768px) {
+  .panel-grid {
+    grid-template-columns: 2fr 1fr;  /* ≈ 8/4 aproximado */
+   
+  }
+}
+@media (min-width: 992px) {
+  .panel-grid {
+    grid-template-columns: 3fr 1fr;  /* ≈ 9/3 EXACTO como pediste */
+    
+  }
+  .panel-left { border-radius: 0 36px 36px 0; }
+}
+@media (max-width: 991.98px) {
+ .panel-grid {
+    margin-left: 0;
+ }
+ .breadcrumb-row {
+    margin-left: 0;
+}
+
+}
+/* Variante: desactivar full-bleed (rara vez) */
+.no-full-bleed::before { left: 0; width: 100%; transform: none; }
+
+/* Compat: modo sin panel */
+.content {}

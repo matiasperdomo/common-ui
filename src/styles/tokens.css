@@ -1,0 +1,361 @@
+/* 
+   ÚNICO ARCHIVO: paleta, tokens semánticos y utilidades globales
+   - Bootstrap overrides mínimos
+   - Enlaces (.link), gradiente (.bg-brand-gradient, .text-brand-gradient)
+   - Botón de acento (.btn-accent)
+   - Helpers globales 
+*/
+
+/* =========================
+   PALETA (PRIMITIVOS)
+   ========================= */
+:root {
+  /* Tipografía */
+  --font-sans: 'Encode Sans', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
+
+  /* Colores base */
+  --color-teal-300:   #74C9E3; /* institucional + suave */
+  --color-teal-600:   #009aae; /* institucional */
+  --color-gray-100:   #f2f2f2;
+  --color-gray-200:   #e1e1e1;
+  --color-gray-300:   #c9c9c9;
+  --color-gray-400:   #c5c5c5;
+  --color-gray-500:   #9aa0a6;
+  --color-gray-600:   #646464; 
+  --color-gray-700:   #414042;
+  --color-gray-800:   #3f3f41;  
+  --color-white:      #ffffff;
+  --color-black:      #000000;
+
+  /* Acento (fucsia) */
+  --color-accent-600: #e71d73;
+
+  /* Gradiente (primitivos) */
+  --color-gradient-pink: #E81F76;
+  --color-gradient-blue: #417099;
+  --color-gradient-cyan: #00AEC3;
+}
+
+/* =========================
+   TOKENS SEMÁNTICOS
+   ========================= */
+:root {
+  /* Texto / fondos / bordes */
+  --text-color:        var(--color-gray-700);
+  --text-color-muted:  var(--color-gray-500);
+  --bg-muted:          var(--color-gray-100);
+  --border-color:      var(--color-gray-300); /* gris claro equivalente al mix 85% blanco */
+  
+  /* Enlaces */
+  --link-color:         var(--color-teal-600);
+  --link-color-muted:   var(--color-gray-600);
+  --link-color-inverse: var(--color-white);
+
+  /* Foco accesible */
+ --focus-ring: 0 0 0 0.25rem rgba(0, 174, 195, 0.28);
+
+  /* Gradiente semántico (ángulo parametrizable) */
+  --gradient-angle: 90deg; 
+  --brand-gradient: linear-gradient(
+    var(--gradient-angle),
+    var(--color-gradient-pink) 0%,
+    var(--color-gradient-blue) 55%,
+    var(--color-gradient-cyan) 100%
+  );
+
+  /* Botón/acento (derivados del acento base) */
+  --accent-color:        var(--color-accent-600);
+  --accent-color-hover:   #cf1967; /* ≈ 10% más oscuro */
+  --accent-color-active:  #b8165a; /* ≈ 18% más oscuro */
+  --accent-focus-shadow:  0 0 0 0.25rem rgba(231, 29, 115, 0.28);
+
+  /* Radios y sombras compartidos */
+  --radius-2xl: 1rem;
+  --shadow-soft: 0 4px 12px rgba(0,0,0,.08);
+}
+
+/* =========================
+   BOOTSTRAP OVERRIDES
+   ========================= */
+:root {
+  --bs-font-sans-serif:    var(--font-sans);
+  --bs-body-font-family:   var(--bs-font-sans-serif);
+  --bs-body-color:         var(--text-color);
+  --bs-link-color:         var(--link-color);
+  --bs-link-hover-color:   var(--link-color); 
+}
+
+/* =========================
+   BASE GLOBAL
+   ========================= */
+html, body {
+  font-family: var(--font-sans) !important;
+  color: var(--text-color);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =========================
+   UTILIDADES: ENLACES
+   ========================= */
+.link {
+  color: var(--link-color);
+  text-decoration: none;
+}
+.link:hover,
+.link:focus { text-decoration: underline; }
+
+.link--muted   { color: var(--link-color-muted); }
+.link--inverse { color: var(--link-color-inverse); }
+
+/* Aplica tokens de link también a <a>  */
+a { color: var(--bs-link-color); text-decoration: none; }
+a:hover, a:focus { color: var(--bs-link-hover-color); text-decoration: underline; }
+
+/* Anillo de foco  */
+:where(a, button, [role="button"], input, select, textarea):focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* =========================
+   UTILIDADES: GRADIENTE
+   ========================= */
+.bg-brand-gradient {
+  background-image: var(--brand-gradient);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.bg-gradient-0   { --gradient-angle:   0deg; }
+.bg-gradient-45  { --gradient-angle:  45deg; }
+.bg-gradient-90  { --gradient-angle:  90deg; } /* default */
+.bg-gradient-135 { --gradient-angle: 135deg; }
+.bg-gradient-180 { --gradient-angle: 180deg; }
+.bg-gradient-270 { --gradient-angle: 270deg; }
+
+.text-brand-gradient {
+  background-image: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* =========================
+   UTILIDADES VARIAS
+   ========================= */
+.u-bg-muted { background-color: var(--bg-muted) !important; }
+
+/* ===== Helpers genéricos (globales)  ===== */
+.bg-gris { background: var(--bg-muted) !important; }
+.rounded-20 { border-radius: var(--radius-2xl); }
+
+/* Bordes utilitarios */
+.border-right-muted  { border-right: 2px solid var(--border-color); }
+.border-bottom-brand { border-bottom: 2px solid var(--link-color); }
+
+/* ===== Indicadores del carrusel (global) ===== */
+#carouselSliderNoticias .carousel-indicators li {
+  display: inline-flex;
+  box-sizing: content-box;
+  height: 15px;
+  width: 15px;
+  border-radius: 3rem;
+  cursor: pointer;
+  opacity: 1;
+  background: none;
+  border: 3px solid var(--link-color-inverse); 
+  transition: opacity .2s ease, transform .12s ease;
+}
+#carouselSliderNoticias .carousel-indicators li.active {
+  background-color: var(--link-color-inverse); 
+}
+
+/* =========================
+   COMPONENTE: BOTÓN DE ACENTO
+   ========================= */
+.btn-accent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  padding: 0 28px;
+  border: 0;
+  border-radius: 9999px;
+  background: var(--accent-color);
+  color: var(--color-white);
+  font-size: 1.125rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color .2s ease, transform .06s ease, box-shadow .2s ease;
+}
+.btn-accent:hover   { background: var(--accent-color-hover);  color: #fff; text-decoration: none; }
+.btn-accent:active  { background: var(--accent-color-active); transform: translateY(1px); }
+.btn-accent:focus-visible { outline: 0; box-shadow: var(--accent-focus-shadow); }
+.btn-accent[disabled], .btn-accent.disabled { opacity: .65; cursor: not-allowed; }
+
+/* =========================
+   TIPOGRAFÍA: ESCALA Y HEADINGS
+   ========================= */
+
+/* ---- Tokens tipográficos (escala responsiva) ---- */
+:root {
+  /* Pesos */
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Títulos (clamp para respuesta fluida) */
+  --h1-size: clamp(2.25rem, 1.2rem + 3vw, 3rem);
+  --h2-size: clamp(1.9rem,  1.05rem + 2.4vw, 2.5rem);
+  --h3-size: clamp(1.6rem,  0.95rem + 1.8vw, 2rem);
+  --h4-size: clamp(1.35rem, 0.9rem  + 1.2vw, 1.5rem);
+  --h5-size: 1.125rem;
+  --h6-size: 1rem;
+
+  /* Alturas de línea y *tracking* */
+  --h-tight: 1.15;
+  --h-normal: 1.25;
+  --h-letter-tight: -0.01em;
+
+  /* Color de los headings (usa token semántico) */
+  --heading-color: var(--color-teal-600);
+}
+
+/* ---- Integración con Bootstrap (variables CSS) ---- */
+:root {
+  --bs-heading-color: var(--heading-color);
+  /* Bootstrap no expone peso/size por variables en CSS puro,
+     pero dejamos la referencia por consistencia del sistema */
+  --bs-heading-font-weight: var(--font-weight-bold);
+}
+
+/* ---- Normalización de headings ---- */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  color: var(--heading-color);
+  margin-block: 0.75em 0.4em;      /* margen coherente vertical */
+  line-height: var(--h-tight);
+  letter-spacing: var(--h-letter-tight);
+  text-wrap: balance;              /* mejora el salto de línea en títulos */
+}
+
+/* Tamaños y pesos por nivel */
+h1 { font-size: var(--h1-size); font-weight: var(--font-weight-bold); }
+h2 { font-size: var(--h2-size); font-weight: var(--font-weight-bold); }
+h3 { font-size: var(--h3-size); font-weight: var(--font-weight-semibold); }
+h4 { font-size: var(--h4-size); font-weight: var(--font-weight-semibold); line-height: var(--h-normal); }
+h5 { font-size: var(--h5-size); font-weight: var(--font-weight-semibold); line-height: var(--h-normal); }
+h6 { font-size: var(--h6-size); font-weight: var(--font-weight-regular); line-height: var(--h-normal); }
+
+/* Opcional: utilidades de título si necesitas usarlas en div/span */
+.u-h1 { font: var(--font-weight-bold) var(--h1-size)/var(--h-tight) var(--font-sans); letter-spacing: var(--h-letter-tight); color: var(--heading-color); }
+.u-h2 { font: var(--font-weight-bold) var(--h2-size)/var(--h-tight) var(--font-sans); letter-spacing: var(--h-letter-tight); color: var(--heading-color); }
+.u-h3 { font: var(--font-weight-semibold) var(--h3-size)/var(--h-tight) var(--font-sans); letter-spacing: var(--h-letter-tight); color: var(--heading-color); }
+
+/* Corrige componentes que usan width:100vw (p. ej., sliders) dentro de #home-cal */
+:root { --scrollbar-comp: calc(100vw - 100%); }
+
+#home-cal .fix-100vw {
+  /* reemplaza 100vw por el ancho real del layout, sin sumar la barra de scroll */
+  width: calc(100vw - var(--scrollbar-comp)) !important;
+  max-width: 100% !important;
+  overflow-x: clip;
+}
+/* Calendarios: banda a sangre sin scroll */
+#home-cal { overflow-x: clip; }           /* moderno; si el navegador no lo soporta, quedará overflow hidden de Bootstrap */
+#home-cal .row { --bs-gutter-x: 0; --bs-gutter-y: 0; margin: 0; }
+#home-cal [class^="col-"], 
+#home-cal .col { padding-left: 0; padding-right: 0; }
+
+/* Evita fugas típicas de medios y sliders */
+#home-cal img, 
+#home-cal video, 
+#home-cal iframe { max-width: 100%; height: auto; display: block; }
+
+/* Si algún hijo trae width:100vw, fuerzo 100% dentro de esta sección */
+#home-cal [style*="100vw"] { width: 100% !important; }
+
+
+/**************************************
+ * Pagination (Bootstrap) — Global
+ * Aplica en todos los <ul class="pagination"> del sitio.
+ **************************************/
+
+/* Variables de paginación (ajústalas una vez aquí) */
+:root {
+  --pg-gap: 10px;                /* separación entre bullets */
+  --pg-pill-radius: 999px;       /* forma píldora */
+  --pg-min-width: 2.5rem;        /* ancho mínimo de cada bullet */
+  --pg-padding-y: .5rem;         /* padding vertical */
+  --pg-padding-x: .75rem;        /* padding horizontal */
+}
+
+/* 1) Elimina el “pegado” por margen negativo de Bootstrap y usa gap */
+.pagination {
+  --bs-pagination-margin-start: 0; /* anula margin-left de .page-link */
+  display: flex;
+  gap: var(--pg-gap);
+}
+
+/* Fallback por si tu versión ignora la var anterior */
+.pagination .page-item:not(:first-child) .page-link {
+  margin-left: 0 !important;
+}
+
+/* 2) Geometría de cada bullet */
+.pagination .page-link {
+  border-radius: var(--pg-pill-radius) !important;
+  min-width: var(--pg-min-width);
+  padding: var(--pg-padding-y) var(--pg-padding-x);
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 3) Colores por tokens (institucionales) */
+.pagination .page-link {
+  color: var(--text-color);
+  border-color: var(--border-color);
+  background-color: transparent;
+}
+.pagination .page-link:hover {
+  color: var(--text-color);
+  border-color: var(--bs-link-color);
+}
+
+/* Activo */
+.pagination .page-item.active .page-link {
+  color: var(--color-white);
+  background-color: var(--bs-link-color);
+  border-color: var(--bs-link-color);
+}
+
+/* Disabled (incluye la elipsis si está deshabilitada) */
+.pagination .page-item.disabled .page-link {
+  color: var(--text-color-muted);
+  background-color: transparent;
+  border-color: var(--border-color);
+  opacity: .9;
+}
+
+/* Accesibilidad: foco visible en paginación */
+.pagination .page-link:focus-visible {
+  outline: 0;
+  box-shadow: var(--focus-ring);
+}
+
+/* 4) Compactación en móviles (opcional) */
+@media (max-width: 576px) {
+  :root {
+    --pg-gap: 8px;
+    --pg-min-width: 2.25rem;
+    --pg-padding-y: .4rem;
+    --pg-padding-x: .6rem;
+  }
+}
