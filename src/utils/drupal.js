@@ -1,4 +1,4 @@
-// Host institucional configurable en un solo lugar
+// Host institucional 
 export const ABC_HOST = 'https://abc.gob.ar';
 
 // Asegura que termine con /
@@ -18,7 +18,7 @@ export function toAbsolute(u = '') {
   if (!u) return '';
   let v = String(u).trim();
 
-  // data: → dejar tal cual (p.ej. placeholders inline)
+  // data: p.ej. placeholders inline
   if (/^data:/i.test(v)) return v;
 
   // private:// → no exponer
@@ -73,4 +73,48 @@ export function toHref(u = '') {
 
   // ya absoluto u otro esquema (https:, ftp:, blob:, etc.)
   return v;
+}
+
+export function normalizeDrupalFileUrl(rawUrl) {
+  if (!rawUrl) return rawUrl;
+
+  try {
+    const url = new URL(rawUrl);
+    const segments = url.pathname.split('/');
+    let filename = segments.pop() || '';
+
+    // Si vino un fragmento (#15.png), lo re-anexamos al nombre de archivo
+    // para que el # pase a ser %23 dentro del path y no un anchor.
+    if (url.hash) {
+      const hashWithoutSharp = url.hash.substring(1); // '15.png', por ejemplo
+
+      // Heurística: si el filename NO tiene punto y el fragmento SÍ,
+      // asumimos que el fragmento es parte del nombre real del archivo.
+      if (!filename.includes('.') && hashWithoutSharp.includes('.')) {
+        filename = `${filename}#${hashWithoutSharp}`;
+        url.hash = ''; // eliminamos el fragmento, ya está incorporado al path
+      }
+    }
+
+    if (!filename) return rawUrl;
+
+    // 1) Intentamos decodificar por si ya tiene %20, %23, etc.
+    let decoded = filename;
+    try {
+      decoded = decodeURIComponent(filename);
+    } catch {
+      // si falla, seguimos con filename tal cual
+    }
+
+    // 2) Volvemos a codificar de forma correcta (espacios, #, acentos, etc.)
+    const encoded = encodeURIComponent(decoded);
+
+    segments.push(encoded);
+    url.pathname = segments.join('/');
+
+    return url.toString();
+  } catch {
+    // Si algo sale mal, devolvemos la original para no romper nada
+    return rawUrl;
+  }
 }

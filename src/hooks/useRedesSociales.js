@@ -5,13 +5,13 @@ import { toAbsolute, toHref } from '../utils/drupal.js';
 const first = (v) => (Array.isArray(v) ? v[0] : v);
 
 /**
- * Hook para obtener redes sociales desde la API v1 (/home.footer.redes/select).
+ * Hook para obtener redes sociales desde la API
  * Retorna: { redes:[{id, enlace, alt, icono, order}], loading, error }
  */
 export function useRedesSociales(opts = {}) {
   const { endpoint: endpointProp, rows = 50 } = opts;
 
-  // Endpoint por defecto calculado dentro del hook (no a nivel de firma)
+  // Endpoint por defecto calculado dentro del hook
   const endpoint = useMemo(() => {
     return (
       endpointProp ||

@@ -11,7 +11,7 @@ const pick = (obj, keys) => {
   return undefined;
 };
 
-// Núcleo: devuelve { status, items, error } sin cambiar la lógica original
+// Núcleo: devuelve { status, items, error } 
 function useMenuCore({ rows = 200 } = {}) {
   const [items, setItems] = useState([]);
   const [status, setStatus] = useState('loading'); // 'loading' | 'success' | 'error' | 'empty'
@@ -25,17 +25,17 @@ function useMenuCore({ rows = 200 } = {}) {
         setStatus('loading');
         setError(null);
 
-        // API v1 : /dti/api/v1/home.menu/select  (solo API base)
+        // API 
         const url = buildApiUrl('/home.menu/select', {
           q: '*:*',
           wt: 'json',
-          rows,                // (4) rows configurable
+          rows,                // rows configurable
           sort: 'peso asc',
         });
 
         const res = await fetch(url, {
           headers: { Accept: 'application/json' },
-          signal: ac.signal,   // (1) AbortController
+          signal: ac.signal,   // AbortController
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
@@ -142,7 +142,7 @@ export function useMenu(opts) {
 
 /**
  * Hook que expone status/error además de items.
- * Útil para manejar loading/errores en la UI sin romper al consumidor existente.
+ * Para manejar loading/errores en la UI sin romper al consumidor existente.
  */
 export function useMenuMeta(opts) {
   return useMenuCore(opts);

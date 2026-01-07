@@ -64,7 +64,7 @@ export const useFooter = () => {
       } catch (e) {
         if (!alive) return;
         console.error('useFooter:', e);
-        setFooterData([]); // contrato: siempre array
+        setFooterData([]); 
       }
     })();
 

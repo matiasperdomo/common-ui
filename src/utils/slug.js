@@ -1,4 +1,4 @@
-// Controla longitud y set de caracteres. Lo dejo en 100 si complica se puede eliminar la línea o subir el número
+// Controla longitud y set de caracteres. Queda en 100, pero si complica se puede eliminar la línea o subir el número
 const MAX_SLUG_LEN = 100;
 
 // Normaliza texto a slug URL-safe
@@ -38,10 +38,7 @@ function escapeQueryValue(v) {
   return String(v).replace(/([+\-!(){}\[\]^"~*?:\\\/]|&&|\|\|)/g, '\\$1');
 }
 
-/**
- * Construye condición para buscar por slug / alias / título.
- * Ajustá los nombres de campos si tu backend usa otros.
- **/
+/** Construye condición para buscar por slug / alias / título **/
 export function buildSlugFq(slug) {
   const s = slugify(slug);
   if (!s) return '';

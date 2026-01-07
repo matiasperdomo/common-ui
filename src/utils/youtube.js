@@ -1,4 +1,3 @@
-// common-ui/src/utils/youtube.js
 export function getYouTubeId(raw = '') {
   try {
     const u = new URL(raw, 'https://example.com'); // base por si viene relativo

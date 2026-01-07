@@ -38,9 +38,9 @@ export function ensureIconFontAwesome() {
     const l = document.createElement('link');
     l.id = 'fa6-cdn';
     l.rel = 'stylesheet';
-    // CDN estable (puedes fijar versión si querés)
+    // CDN (se puede fijar versión)
     l.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css';
-    // Si tu CSP/SRI rompe, quita integrity para diagnosticar y luego restáuralo con el hash correcto.
+    // Si CSP/SRI se rompe, quita integrity para diagnosticar y luego restaurarlo con el hash correcto.
     // l.integrity = 'sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkfE2QmXwIJ7jQ4Rz2LrLZ1xQDo8oyV2Lrj3QX7rS2V5Qq1N9+JX4Ck6Q==';
     l.crossOrigin = 'anonymous';
     l.referrerPolicy = 'no-referrer';

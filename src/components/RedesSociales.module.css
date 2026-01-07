@@ -1,10 +1,9 @@
-/* Presentación 100% en CSS (sin props de estilo) */
 .wrapper {
   display: flex;
   align-items: center;
   flex-direction: row;     /* Footer: horizontal */
-  flex-wrap: nowrap;       /* en footer queremos una sola línea */
-  gap: 0.5rem;             /* más juntos */
+  flex-wrap: nowrap;       
+  gap: 0.5rem;             
   --icon-size: 30px;       /* tamaño por defecto (footer) */
 }
 
@@ -34,11 +33,11 @@
 .clickable:active .icon { transform: scale(0.98); }
 
 /* Filtros por alt (case-insensitive) */
-.wrapper :global(img[alt~="Facebook" i])  { filter: hue-rotate(125deg); }
-.wrapper :global(img[alt~="Twitter"  i])  { filter: hue-rotate(116deg) saturate(0.4) brightness(0.9); }
-.wrapper :global(img[alt~="X"        i])  { filter: hue-rotate(119deg) brightness(0.6); }
-.wrapper :global(img[alt*="Instagram" i]) { filter: hue-rotate(35deg) brightness(0.7); }
-.wrapper :global(img[alt~="Flickr"   i])  { filter: hue-rotate(14deg) brightness(0.9); }
+.wrapper :global(img[src*="facebook" i]) { filter: hue-rotate(127deg); }
+.wrapper :global(img[src*="Twitter"  i])  { filter: hue-rotate(119deg) brightness(0.6); }
+.wrapper :global(img[src*="X"        i])  { filter: hue-rotate(119deg) brightness(0.6); }
+.wrapper :global(img[src*="Instagram" i]) { filter: hue-rotate(35deg) brightness(0.7); }
+.wrapper :global(img[src*="Flickr"   i])  { filter: hue-rotate(14deg) brightness(0.9); }
 
 /* =========================
    Variante: columna derecha (Home)
@@ -62,7 +61,7 @@
   border-radius: 0;         /* skeleton también sin redondeo */
 }
 
-/* Área clickeable más robusta (opcional) */
+/* Área clickeable más robusta */
 .link {
   display: inline-flex;
   align-items: center;

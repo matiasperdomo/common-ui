@@ -3,6 +3,20 @@ import React from 'react';
 import { useRedesSociales } from '../hooks/useRedesSociales';
 import styles from './RedesSociales.module.css';
 
+function getRedAlt(red) {
+  if (red.alt) return red.alt;
+
+  const href = (red.enlace || '').toLowerCase();
+
+  if (href.includes('facebook.com')) return 'Facebook';
+  if (href.includes('twitter.com') || href.includes('x.com')) return 'Twitter';
+  if (href.includes('instagram.com')) return 'Instagram';
+  if (href.includes('flickr.com')) return 'Flickr';
+
+  return 'Red social institucional';
+}
+
+
 export default function RedesSociales({ variant = 'default', className = '' }) {
   const { redes, loading, error } = useRedesSociales({});
   const rootClass = `${styles.wrapper} ${variant === 'sidebar' ? styles.sidebar : ''} ${className}`;

@@ -15,7 +15,7 @@ export function useHeaderLogos() {
         setStatus('loading');
         setError(null);
 
-                const url = buildApiUrl('home.pagina.logos/select', { q: '*:*' });
+        const url = buildApiUrl('home.pagina.logos/select', { q: '*:*' });
         const res = await fetch(url, { signal: ac.signal });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
