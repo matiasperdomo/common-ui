@@ -50,7 +50,7 @@ import { Header, Footer } from 'common-ui';
 - `formatFechaLongEs(fecha)` → Ej.: `formatFechaLongEs('2025-07-26')` → `"26 de julio de 2025"`
 - `formatFechaLargoES(fecha)` → Ej.: `formatFechaLargoES('2025-11-10')` → `"10 noviembre 2025"`
 
-### Ejemplo
+#### Ejemplo
 ```js
 import {
   Header,
@@ -61,7 +61,7 @@ import {
   buildApiUrl,
 } from 'common-ui';
 ```
-## Convenciones clave
+## Convenciones
 ### Container + View
 Los componentes principales se implementan en dos capas: un contenedor (datos/estado) y una vista (render).
 
