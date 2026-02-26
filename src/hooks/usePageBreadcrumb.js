@@ -7,7 +7,7 @@ export function usePageBreadcrumb({
   overrides = {},
   transform,            // p.ej. (s) => s.replace(/[-_]+/g,' ').toUpperCase()
   maxItems,             // número opcional
-  pathname,             // opcional (para test); por defecto usa useLocation()
+  pathname,             // opcional (útil para tests), pero sigue requiriendo Router porque se usa useLocation()
 } = {}) {
   const loc = useLocation();
   const path = pathname ?? loc.pathname;

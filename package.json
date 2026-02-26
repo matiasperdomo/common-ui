@@ -18,9 +18,13 @@
   "peerDependencies": {
     "react": ">=18",
     "react-bootstrap": ">=2",
-    "react-dom": ">=18"
+    "react-dom": ">=18",
+    "react-router-dom": ">=6"
   },
-  "scripts": {
+  "devDependencies": {
+    "react-router-dom": ">=6"
+  },
+ "scripts": {
     "build": "vite build",
     "build:watch": "vite build --watch"
   }

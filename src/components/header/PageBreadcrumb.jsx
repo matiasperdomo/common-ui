@@ -1,4 +1,3 @@
-// PageBreadcrumb.jsx
 import React from 'react';
 import { usePageBreadcrumb } from '../../hooks/usePageBreadcrumb';
 import PageBreadcrumbView from './PageBreadcrumbView';

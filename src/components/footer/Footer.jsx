@@ -1,31 +1,93 @@
-/**
- * Footer.jsx (container)
- * Rol: Orquestador del Footer. Obtiene datos vía useFooterData y delega renderizado a FooterView.
- * - Muestra Skeleton con Bootstrap mientras carga.
- * - Muestra estado de error si falla.
- * - Renderiza FooterView cuando hay datos.
- */
-
 import React from 'react';
 import FooterView from './FooterView';
 import { useFooterData } from '../../hooks/useFooterData';
+import { toSafeHref } from '../../utils/drupal';
 
-export default function Footer() {
-  // Compatibilidad: si el hook aún no expone loading/error, usamos defaults.
-  const {
-    logos,
-    columnas,
-    hasData,
-    loading = false,
-    error = null,
-  } = useFooterData();
+const DEFAULT_STATIC_MODEL = {
+  logos: {
+    enlace: 'https://abc.gob.ar',
+    desktop: null,
+    desktopAlt: 'abc.gob.ar',
+    mobile: null,
+    mobileAlt: 'abc.gob.ar',
+  },
+  columnas: {
+    0: {
+      Servicios: {
+        delta: 0,
+        enlaces: [
+          { texto: 'Inicio', url: 'https://abc.gob.ar', delta: 0 },
+          { texto: 'Listado oficial', url: 'https://abc.gob.ar/listado-oficial', delta: 1 },
+          { texto: 'Consulta de Establecimientos', url: 'https://abc.gob.ar/establecimientos', delta: 2 },
+        ],
+      },
+    },
+  },
+};
 
+function sanitizeStaticModel(model) {
+  const m = model || DEFAULT_STATIC_MODEL;
+
+  const logos = m.logos || {};
+  const columnas = m.columnas || {};
+
+  const sanitizedLogos = {
+    ...logos,
+    enlace: toSafeHref(logos.enlace),
+  };
+
+  const sanitizedColumnas = {};
+  Object.keys(columnas).forEach((colKey) => {
+    const col = columnas[colKey] || {};
+    sanitizedColumnas[colKey] = {};
+
+    Object.entries(col).forEach(([titulo, sec]) => {
+      const enlaces = Array.isArray(sec?.enlaces) ? sec.enlaces : [];
+      sanitizedColumnas[colKey][titulo] = {
+        ...sec,
+        enlaces: enlaces.map((e) => ({
+          ...e,
+          url: toSafeHref(e?.url),
+        })),
+      };
+    });
+  });
+
+  return { logos: sanitizedLogos, columnas: sanitizedColumnas };
+}
+
+export default function Footer({
+  fallback = 'none', // 'none' | 'static'
+  staticModel,
+}) {
+  const { logos, columnas, hasData, loading, error } = useFooterData();
+
+  // 1) Cargando: siempre skeleton (evita mostrar fallback “antes de tiempo”)
   if (loading) return <FooterSkeleton />;
-  if (error) return <FooterError message="No se pudo cargar el pie de página." />;
 
-  // Mantiene el comportamiento previo: si no hay datos, no renderiza nada.
-  if (!hasData) return null;
+  // Helper: construir modelo fallback una sola vez cuando corresponde
+  const renderStaticFallback = () => {
+    const model = sanitizeStaticModel(staticModel || DEFAULT_STATIC_MODEL);
+    return <FooterView logos={model.logos} columnas={model.columnas} />;
+  };
 
+  // 2) Error:
+  // - con fallback="static" → mostrar footer mínimo (NO alert)
+  // - sin fallback          → mostrar alert
+  if (error) {
+    if (fallback === 'static') return renderStaticFallback();
+    return <FooterError message="No se pudo cargar el pie de página." />;
+  }
+
+  // 3) Sin datos:
+  // - con fallback="static" → mostrar footer mínimo
+  // - sin fallback          → no renderizar nada
+  if (!hasData) {
+    if (fallback === 'static') return renderStaticFallback();
+    return null;
+  }
+
+  // 4) Con datos
   return <FooterView logos={logos} columnas={columnas} />;
 }
 
@@ -35,11 +97,15 @@ export default function Footer() {
 
 function FooterSkeleton() {
   return (
-    <footer className="bg-light border-top py-4" role="contentinfo" aria-label="Pie de página DGCyE" aria-busy="true" aria-live="polite">
+    <footer
+      className="bg-light border-top py-4"
+      role="contentinfo"
+      aria-label="Pie de página DGCyE"
+      aria-busy="true"
+      aria-live="polite"
+    >
       <div className="container">
-        {/* Fila superior: logo + columnas */}
         <div className="row gx-4 gy-4 placeholder-glow">
-          {/* Columna logo/identidad */}
           <div className="col-12 col-md-3">
             <div className="d-flex align-items-start gap-3">
               <span className="placeholder rounded" style={{ width: 64, height: 64 }} />
@@ -51,7 +117,6 @@ function FooterSkeleton() {
             </div>
           </div>
 
-          {/* Tres columnas de enlaces simuladas */}
           <div className="col-6 col-md-3">
             <div className="placeholder col-7 mb-3" style={{ height: 14 }} />
             {Array.from({ length: 5 }).map((_, i) => (
@@ -74,10 +139,8 @@ function FooterSkeleton() {
           </div>
         </div>
 
-        {/* Separador */}
         <hr className="my-4" />
 
-        {/* Fila inferior: redes sociales simuladas */}
         <div className="row">
           <div className="col-12">
             <div className="d-flex align-items-center gap-3 placeholder-glow">
@@ -96,7 +159,6 @@ function FooterSkeleton() {
           </div>
         </div>
 
-        {/* Leyenda legal simulada */}
         <div className="row mt-3 placeholder-glow">
           <div className="col-12">
             <div className="placeholder col-12 mb-2" style={{ height: 10 }} />
@@ -114,7 +176,13 @@ function FooterSkeleton() {
 
 function FooterError({ message = 'Error al cargar.' }) {
   return (
-    <footer className="bg-light border-top py-4" role="contentinfo" aria-label="Pie de página DGCyE" aria-live="polite" aria-atomic="true">
+    <footer
+      className="bg-light border-top py-4"
+      role="contentinfo"
+      aria-label="Pie de página DGCyE"
+      aria-live="polite"
+      aria-atomic="true"
+    >
       <div className="container">
         <div className="alert alert-warning mb-0" role="alert">
           {message}

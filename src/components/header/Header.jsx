@@ -19,7 +19,7 @@ export default function Header({ alerta }) {
   }
 
   // Logos (tu interfaz actual { status, data, error })
-  const { status: logoStatus = 'idle', data: logos = [], error: logoError = null } = useHeaderLogos();
+  const { status: logoStatus = 'idle', data: logos = null, error: logoError = null } = useHeaderLogos();
 
   // loading sólo bloquea si el hook EXPONE estado distinto de 'success'
   const loading = (logoStatus !== 'success') || (menuStatus !== 'success');
@@ -27,7 +27,7 @@ export default function Header({ alerta }) {
 
   return (
     <HeaderView
-      logos={logos}
+      logos={logos || {}}
       menuItems={menuItems}
       alerta={alerta}
       loading={loading}

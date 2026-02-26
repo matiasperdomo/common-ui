@@ -1,7 +1,7 @@
-// Host institucional 
+// Host institucional
 export const ABC_HOST = 'https://abc.gob.ar';
 
-// Asegura que termine con /
+// Base pública de archivos de Drupal
 export const PUBLIC_FILE_BASE = 'https://abc.gob.ar/sites/default/files/';
 
 // Reemplaza public:// por la URL pública del files/ de Drupal
@@ -45,7 +45,8 @@ export function toAbsolute(u = '') {
 
 /**
  * Normaliza HREFs de navegación (NO archivos).
- * - Bloquea javascript: y datos no navegables
+ * - Bloquea javascript:
+ * - internal:/ruta → https://abc.gob.ar/ruta (Drupal)
  * - //example.com → https://example.com
  * - http://...    → https://...
  * - /ruta         → https://abc.gob.ar/ruta
@@ -55,6 +56,12 @@ export function toAbsolute(u = '') {
 export function toHref(u = '') {
   if (!u) return '#';
   const v = String(u).trim();
+
+  // Drupal internal:/ruta → /ruta (mismo dominio)
+  if (/^internal:\//i.test(v)) {
+    const path = v.replace(/^internal:\//i, '/'); // asegura / al inicio
+    return `${ABC_HOST}${path}`;
+  }
 
   // bloquear esquemas peligrosos
   if (/^javascript:/i.test(v)) return '#';
@@ -83,30 +90,30 @@ export function normalizeDrupalFileUrl(rawUrl) {
     const segments = url.pathname.split('/');
     let filename = segments.pop() || '';
 
-    // Si vino un fragmento (#15.png), lo re-anexamos al nombre de archivo
+    // Si vino un fragmento (#15.png), se re-anexa al nombre de archivo
     // para que el # pase a ser %23 dentro del path y no un anchor.
     if (url.hash) {
-      const hashWithoutSharp = url.hash.substring(1); // '15.png', por ejemplo
+      const hashWithoutSharp = url.hash.substring(1);
 
       // Heurística: si el filename NO tiene punto y el fragmento SÍ,
-      // asumimos que el fragmento es parte del nombre real del archivo.
+      // se asume que el fragmento es parte del nombre real del archivo.
       if (!filename.includes('.') && hashWithoutSharp.includes('.')) {
         filename = `${filename}#${hashWithoutSharp}`;
-        url.hash = ''; // eliminamos el fragmento, ya está incorporado al path
+        url.hash = '';
       }
     }
 
     if (!filename) return rawUrl;
 
-    // 1) Intentamos decodificar por si ya tiene %20, %23, etc.
+    // 1) Intenta decodificar por si ya tiene %20, %23, etc.
     let decoded = filename;
     try {
       decoded = decodeURIComponent(filename);
     } catch {
-      // si falla, seguimos con filename tal cual
+      // si falla, sigue con filename tal cual
     }
 
-    // 2) Volvemos a codificar de forma correcta (espacios, #, acentos, etc.)
+    // 2) Vuelve a codificar de forma correcta (espacios, #, acentos, etc.)
     const encoded = encodeURIComponent(decoded);
 
     segments.push(encoded);
@@ -114,7 +121,49 @@ export function normalizeDrupalFileUrl(rawUrl) {
 
     return url.toString();
   } catch {
-    // Si algo sale mal, devolvemos la original para no romper nada
+    // Si algo sale mal, devuelve la original para no romper nada
     return rawUrl;
+  }
+}
+
+/**
+ * HREF seguro para navegación.
+ * - Normaliza primero (incluye internal:/ → https://abc.gob.ar/...)
+ * - Devuelve null si no es navegable/seguro
+ * - Permite: https://, mailto:, tel:, rutas internas
+ * - Bloquea: javascript:, data:, vbscript:, file:, control chars
+ */
+export function toSafeHref(raw) {
+  if (!raw) return null;
+
+  const input = String(raw).trim();
+  if (!input) return null;
+
+  // Caracteres de control (defensa básica)
+  if (/[\u0000-\u001F\u007F]/.test(input)) return null;
+
+  // Bloquear esquemas inseguros en el input (antes de normalizar)
+  if (/^(javascript:|data:|vbscript:|file:)/i.test(input)) return null;
+
+  // Normalizar primero (esto resuelve internal:/, http→https, /ruta→ABC_HOST, etc.)
+  const normalized = toHref(input);
+
+  // Si no es navegable, no renderizamos enlace
+  if (!normalized || normalized === '#') return null;
+
+  // Permitir mailto/tel tal cual
+  if (/^(mailto:|tel:)/i.test(normalized)) return normalized;
+
+  // Rechazar cualquier esquema que no sea https (política institucional razonable)
+  // Si en algún caso se necesita permitir http interno, se revisa, pero por defecto es mejor bloquearlo.
+  if (!/^https:\/\//i.test(normalized)) return null;
+
+  // Validar URL final
+  try {
+    const u = new URL(normalized);
+    if (u.protocol !== 'https:') return null;
+    return u.toString();
+  } catch {
+    return null;
   }
 }

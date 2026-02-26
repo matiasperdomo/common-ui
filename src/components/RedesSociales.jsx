@@ -1,21 +1,22 @@
-// common-ui/src/components/RedesSociales.jsx
 import React from 'react';
 import { useRedesSociales } from '../hooks/useRedesSociales';
 import styles from './RedesSociales.module.css';
 
 function getRedAlt(red) {
-  if (red.alt) return red.alt;
+  // Si el hook ya trae alt (desde Solr), se deja tal cual.
+  if (red?.alt) return red.alt;
 
-  const href = (red.enlace || '').toLowerCase();
+  // Fallback por URL (solo si falta el alt).
+  const href = (red?.enlace || '').toLowerCase();
 
   if (href.includes('facebook.com')) return 'Facebook';
-  if (href.includes('twitter.com') || href.includes('x.com')) return 'Twitter';
+  if (href.includes('twitter.com') || href.includes('x.com')) return 'X';
   if (href.includes('instagram.com')) return 'Instagram';
   if (href.includes('flickr.com')) return 'Flickr';
+  if (href.includes('youtube.com') || href.includes('youtu.be')) return 'YouTube';
 
   return 'Red social institucional';
 }
-
 
 export default function RedesSociales({ variant = 'default', className = '' }) {
   const { redes, loading, error } = useRedesSociales({});
@@ -37,19 +38,27 @@ export default function RedesSociales({ variant = 'default', className = '' }) {
 
   return (
     <ul className={`list-unstyled m-0 ${rootClass}`} aria-label="Redes sociales institucionales">
-      {redes?.map((red) => (
-        <li key={red.id} className={styles.link}>
-          <a
-            href={red.enlace}
-            target="_blank"
-            rel="noopener noreferrer"
-            title={red.alt || 'Red social'}
-            className="clickable"
-          >
-            <img src={red.icono} alt={red.alt || ''} className={styles.icon} loading="lazy" />
-          </a>
-        </li>
-      ))}
+      {redes?.map((red) => {
+        // Evita <a href={null|''}> si el endpoint viene incompleto.
+        if (!red?.enlace) return null;
+
+        const label = getRedAlt(red);
+
+        return (
+          <li key={red.id} className={styles.link}>
+            <a
+              href={red.enlace}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={label}
+              title={label}
+              className="clickable"
+            >
+              <img src={red.icono} alt={label} className={styles.icon} loading="lazy" />
+            </a>
+          </li>
+        );
+      })}
     </ul>
   );
 }

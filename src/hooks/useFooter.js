@@ -1,14 +1,23 @@
 import { useEffect, useState } from 'react';
 import { buildApiUrl } from '../utils/api.js';
 
+/**
+ * useFooter
+ * - Carga los docs del endpoint Solr del footer (paginado + deduplicación defensiva).
+ * - Expone estado operativo para UI: { data, loading, error }.
+ */
 export const useFooter = () => {
-  const [footerData, setFooterData] = useState([]);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     let alive = true;
-    const PAGE_SIZE = 200; // tamaño de página (ajustable)
+
+    const PAGE_SIZE = 200;
+
     const makeKey = (d) => {
-      // clave defensiva para deduplicar sin depender de 'sort'
+      // Clave defensiva para deduplicar sin depender de 'sort'
       const tb = String(d?.tipo_bloque ?? '');
       const nid = String(d?.nid ?? '');
       const delta = String(d?.delta ?? d?.foot_enlace_delta ?? '');
@@ -18,13 +27,16 @@ export const useFooter = () => {
 
     (async () => {
       try {
+        setLoading(true);
+        setError(null);
+
         // 1) HEAD: cuántos documentos hay (sin traer filas)
         const headUrl = buildApiUrl('/home.footer.redes/select', {
           q: '*:*',
           wt: 'json',
           rows: 0,
-          // si en el futuro se quiere acotar: fq: '(tipo_bloque:footer OR tipo_bloque:redes_sociales)',
         });
+
         const headRes = await fetch(headUrl, { headers: { Accept: 'application/json' } });
         if (!headRes.ok) throw new Error(`HTTP ${headRes.status} (head)`);
 
@@ -32,11 +44,18 @@ export const useFooter = () => {
         if (!alive) return;
 
         const total = Number(head?.response?.numFound ?? 0);
-        if (!total) { setFooterData([]); return; }
+
+        // Si no hay docs, esto NO es error: es "sin datos"
+        if (!total) {
+          setData([]);
+          setLoading(false);
+          return;
+        }
 
         // 2) Paginación con start/rows (sin sort)
         const seen = new Set();
         const all = [];
+
         for (let start = 0; start < total; start += PAGE_SIZE) {
           const url = buildApiUrl('/home.footer.redes/select', {
             q: '*:*',
@@ -44,6 +63,7 @@ export const useFooter = () => {
             rows: PAGE_SIZE,
             start,
           });
+
           const res = await fetch(url, { headers: { Accept: 'application/json' } });
           if (!res.ok) throw new Error(`HTTP ${res.status} (page ${start})`);
 
@@ -60,16 +80,22 @@ export const useFooter = () => {
           }
         }
 
-        setFooterData(all);
+        if (!alive) return;
+        setData(all);
+        setLoading(false);
       } catch (e) {
         if (!alive) return;
         console.error('useFooter:', e);
-        setFooterData([]); 
+        setData([]);
+        setError(e instanceof Error ? e : new Error('Error desconocido'));
+        setLoading(false);
       }
     })();
 
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+    };
   }, []);
 
-  return footerData;
+  return { data, loading, error };
 };

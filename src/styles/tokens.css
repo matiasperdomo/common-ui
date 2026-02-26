@@ -257,30 +257,28 @@ h6 { font-size: var(--h6-size); font-weight: var(--font-weight-regular); line-he
 .u-h2 { font: var(--font-weight-bold) var(--h2-size)/var(--h-tight) var(--font-sans); letter-spacing: var(--h-letter-tight); color: var(--heading-color); }
 .u-h3 { font: var(--font-weight-semibold) var(--h3-size)/var(--h-tight) var(--font-sans); letter-spacing: var(--h-letter-tight); color: var(--heading-color); }
 
-/* Corrige componentes que usan width:100vw (p. ej., sliders) dentro de #home-cal */
-:root { --scrollbar-comp: calc(100vw - 100%); }
 
-#home-cal .fix-100vw {
-  /* reemplaza 100vw por el ancho real del layout, sin sumar la barra de scroll */
-  width: calc(100vw - var(--scrollbar-comp)) !important;
-  max-width: 100% !important;
-  overflow-x: clip;
+/* =========================
+   HEADER ALERT
+   ========================= */
+   
+  /* Mensaje institucional / sistema) */
+:root {
+  --header-alert-bg: var(--bg-muted);
+  --header-alert-fg: var(--text-color);
+  --header-alert-border: var(--border-color);
+
+  /* padding/typography estandarizado */
+  --header-alert-padding-y: 0.5rem;
+  --header-alert-padding-x: 1rem;
+  --header-alert-font-size: 0.95rem;
 }
-/* Calendarios: banda a sangre sin scroll */
-#home-cal { overflow-x: clip; }           /* moderno; si el navegador no lo soporta, quedará overflow hidden de Bootstrap */
-#home-cal .row { --bs-gutter-x: 0; --bs-gutter-y: 0; margin: 0; }
-#home-cal [class^="col-"], 
-#home-cal .col { padding-left: 0; padding-right: 0; }
 
-/* Evita fugas típicas de medios y sliders */
-#home-cal img, 
-#home-cal video, 
-#home-cal iframe { max-width: 100%; height: auto; display: block; }
-
-/* Si algún hijo trae width:100vw, fuerzo 100% dentro de esta sección */
-#home-cal [style*="100vw"] { width: 100% !important; }
-
-
+/* Header */
+:root {
+  --header-toggler-border-hover: var(--link-color);
+  --header-divider-color: var(--border-color);
+}
 /**************************************
  * Pagination (Bootstrap) — Global
  * Aplica en todos los <ul class="pagination"> del sitio.
@@ -383,5 +381,5 @@ nav[aria-label="breadcrumb"] .breadcrumb .breadcrumb-item a:focus {
 /* Item activo (sin link) */
 nav[aria-label="breadcrumb"] .breadcrumb .breadcrumb-item.active {
   color: var(--text-color);
-  font-weight: var(--font-weight-normal);
+  font-weight: var(--font-weight-regular);
 }

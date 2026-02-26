@@ -1,16 +1,9 @@
-// common-ui/src/components/footer/FooterView.jsx
 import React from 'react';
 import styles from './Footer.module.css';
 import RedesSociales from '../RedesSociales';
 
-// Ítems que NO deben tener enlace (texto plano)
-const NO_LINK_TEXTS = new Set([
-  'Consultas generales (conmutador): (0221) 429-7600',
-  'Ayuda técnica a usuarios de ABC: infoayuda@abc.gob.ar',
-]);
-
 export default function FooterView({ logos = {}, columnas = {} }) {
-  // Normalizar columnas → array de secciones {titulo, enlaces}
+  // Normalizar columnas → array de secciones { titulo, enlaces }
   const sections = React.useMemo(() => {
     const out = [];
     Object.keys(columnas)
@@ -28,6 +21,56 @@ export default function FooterView({ logos = {}, columnas = {} }) {
   const [open, setOpen] = React.useState(null);
   const toggle = (idx) => setOpen((o) => (o === idx ? null : idx));
 
+  // Helpers “tontos”: el View NO decide seguridad; solo renderiza si hay href.
+  const renderLinkOrText = (enlace, key) => {
+    const text = (enlace?.texto || '').trim();
+    const href = enlace?.url || null;
+
+    return (
+      <li key={key} className={styles['footer-item']}>
+        {href ? (
+          <a href={href} className={`${styles['footer-link']} text-decoration-none`}>
+            {text}
+          </a>
+        ) : (
+          <span className="text-dark">{text}</span>
+        )}
+      </li>
+    );
+  };
+
+  const renderLogo = (variant) => {
+    const isMobile = variant === 'mobile';
+    const src = isMobile ? (logos.mobile || logos.desktop) : logos.desktop;
+    if (!src) return null;
+
+    const alt = isMobile
+      ? (logos.mobileAlt || logos.desktopAlt || 'Logo institucional')
+      : (logos.desktopAlt || 'Logo institucional');
+
+    const href = logos.enlace || null;
+    const imgClass = isMobile ? styles.footerLogoMobile : styles.footerLogo;
+
+    const img = (
+      <img
+        src={src}
+        alt={alt}
+        className={`img-fluid ${imgClass}`}
+      />
+    );
+
+    // Si no hay href válido, no se renderiza <a>
+    return href ? (
+      <a href={href} aria-label={alt} className="d-inline-block">
+        {img}
+      </a>
+    ) : (
+      <span aria-label={alt} className="d-inline-block">
+        {img}
+      </span>
+    );
+  };
+
   return (
     <footer
       className={`${styles.footer} container-fluid`}
@@ -38,11 +81,15 @@ export default function FooterView({ logos = {}, columnas = {} }) {
         {/* ====== MOBILE: Acordeón → Logo → Redes ====== */}
         <div className="d-md-none">
           {/* Acordeón de columnas */}
-          <ul className={`list-unstyled m-0 ${styles.accordionList}`} aria-label="Enlaces del pie de página">
+          <ul
+            className={`list-unstyled m-0 ${styles.accordionList}`}
+            aria-label="Enlaces del pie de página"
+          >
             {sections.map((sec, idx) => {
               const isOpen = open === idx;
               const panelId = `fsec-${idx}`;
               const buttonId = `fbtn-${idx}`;
+
               return (
                 <li key={panelId} className={`mb-2 ${styles.accItem}`}>
                   <button
@@ -68,24 +115,9 @@ export default function FooterView({ logos = {}, columnas = {} }) {
                     aria-hidden={!isOpen}
                   >
                     <ul className="list-unstyled m-0">
-                      {sec.enlaces.map((enlace, i) => {
-                        const text = (enlace.texto || enlace.url || '').trim();
-                        const noLink = NO_LINK_TEXTS.has(text);
-                        return (
-                          <li key={`${panelId}-${i}`} className={styles['footer-item']}>
-                            {noLink ? (
-                              <span className="text-dark">{text}</span>
-                            ) : (
-                              <a
-                                href={enlace.url || '#'}
-                                className={`${styles['footer-link']} text-decoration-none`}
-                              >
-                                {text}
-                              </a>
-                            )}
-                          </li>
-                        );
-                      })}
+                      {sec.enlaces.map((enlace, i) =>
+                        renderLinkOrText(enlace, `${panelId}-${i}`)
+                      )}
                     </ul>
                   </div>
                 </li>
@@ -94,21 +126,7 @@ export default function FooterView({ logos = {}, columnas = {} }) {
           </ul>
 
           {/* Logo debajo del acordeón */}
-          <div className="text-center mt-3">
-            {(logos.mobile || logos.desktop) && (
-              <a
-                href={logos.enlace || '#'}
-                aria-label={logos.mobileAlt || logos.desktopAlt || 'Sitio institucional DGCyE'}
-                className="d-inline-block"
-              >
-                <img
-                  src={logos.mobile || logos.desktop}
-                  alt={logos.mobileAlt || logos.desktopAlt || 'Logo institucional'}
-                  className={`img-fluid ${styles.footerLogoMobile}`}
-                />
-              </a>
-            )}
-          </div>
+          <div className="text-center mt-3">{renderLogo('mobile')}</div>
 
           {/* Redes debajo del logo (visibles en mobile) */}
           <div
@@ -120,30 +138,14 @@ export default function FooterView({ logos = {}, columnas = {} }) {
           </div>
         </div>
 
-        {/* ====== DESKTOP: SIN CAMBIOS ====== */}
+        {/* ====== DESKTOP ====== */}
         <div className="d-none d-md-block">
           <div className="row g-4 g-lg-5 align-items-start">
-            {/* Columna 1: Logo + Redes (tal cual original) */}
+            {/* Columna 1: Logo + Redes */}
             <div className="col-12 col-lg-3">
-              <a
-                href={logos.enlace || '#'}
-                aria-label={logos.desktopAlt || 'Sitio institucional DGCyE'}
-                className="d-inline-block"
-              >
-                {logos.desktop && (
-                  <img
-                    src={logos.desktop}
-                    alt={logos.desktopAlt || 'Logo institucional'}
-                    className={`img-fluid ${styles.footerLogo}`}
-                  />
-                )}
-              </a>
+              {renderLogo('desktop')}
 
-              <div
-                className={styles['footer-social']}
-                aria-label="Redes sociales"
-                role="group"
-              >
+              <div className={styles['footer-social']} aria-label="Redes sociales" role="group">
                 <RedesSociales />
               </div>
             </div>
@@ -167,24 +169,9 @@ export default function FooterView({ logos = {}, columnas = {} }) {
                           {seccion}
                         </h6>
                         <ul className="list-unstyled m-0" aria-labelledby={headingId}>
-                          {enlaces.map((enlace, idx) => {
-                            const text = (enlace.texto || enlace.url || '').trim();
-                            const noLink = NO_LINK_TEXTS.has(text);
-                            return (
-                              <li key={`${seccion}-${idx}`} className={styles['footer-item']}>
-                                {noLink ? (
-                                  <span className="text-dark">{text}</span>
-                                ) : (
-                                  <a
-                                    href={enlace.url || '#'}
-                                    className={`${styles['footer-link']} text-decoration-none`}
-                                  >
-                                    {text}
-                                  </a>
-                                )}
-                              </li>
-                            );
-                          })}
+                          {enlaces.map((enlace, idx) =>
+                            renderLinkOrText(enlace, `${seccion}-${idx}`)
+                          )}
                         </ul>
                       </div>
                     );
@@ -197,5 +184,3 @@ export default function FooterView({ logos = {}, columnas = {} }) {
     </footer>
   );
 }
-
-

@@ -1,4 +1,3 @@
-// src/components/header/HeaderView.jsx
 import React, { useEffect, useState } from 'react';
 import { Navbar, Container } from 'react-bootstrap';
 import styles from './Header.module.css';
@@ -11,9 +10,7 @@ const NAV_ID = 'main-navbar';
 function useIsLgUp() {
   const query = '(min-width: 992px)';
   const get = () =>
-    typeof window !== 'undefined'
-      ? window.matchMedia(query).matches
-      : false;
+    typeof window !== 'undefined' ? window.matchMedia(query).matches : false;
 
   const [lgUp, setLgUp] = useState(get);
 
@@ -55,38 +52,86 @@ function handleSearchSubmit(e) {
 const Logo = React.memo(function Logo({ logo, className, fallbackAlt }) {
   if (!logo?.src) return null;
   const alt = logo.alt || fallbackAlt || '';
-  const img = <img src={logo.src} alt={alt} className={`${className ?? ''} img-fluid`} />;
-  return logo.link ? <a href={logo.link} aria-label={alt || 'logo'}>{img}</a> : img;
+  const img = (
+    <img
+      src={logo.src}
+      alt={alt}
+      className={`${className ?? ''} img-fluid`}
+    />
+  );
+  return logo.link ? (
+    <a href={logo.link} aria-label={alt || 'logo'}>
+      {img}
+    </a>
+  ) : (
+    img
+  );
 });
 
-export default function HeaderView({ logos = {}, menuItems = [], alerta }) {
+// ✅ Arreglo A: HeaderView consume loading/error y los representa en la UI
+export default function HeaderView({
+  logos = {},
+  menuItems = [],
+  alerta,
+  loading = false,
+  error = null,
+}) {
   const { provincia, abc } = logos || {};
   const isLgUp = useIsLgUp();
 
   return (
-    <header style={{ overflowX: isLgUp ? 'visible' : 'hidden' }}>
+    <header
+      style={{ overflowX: isLgUp ? 'visible' : 'hidden' }}
+      aria-busy={loading ? 'true' : 'false'}
+    >
       {Boolean(alerta) && <div className={styles.alerta}>{alerta}</div>}
+
+      {Boolean(error) && (
+        <div role="status" className={styles.alerta}>
+          No se pudo cargar completamente el encabezado.
+        </div>
+      )}
 
       {/* Faja superior de logos */}
       <div className="container-fluid py-2 py-md-3 py-lg-4">
         <div className="row g-0 align-items-center">
           <div className="col-12 col-lg-6">
-            <Logo logo={provincia} className={`${styles['logo-provincia']} img-fluid`} fallbackAlt="Logo Provincia" />  
+            <Logo
+              logo={provincia}
+              className={`${styles['logo-provincia']} img-fluid`}
+              fallbackAlt="Logo Provincia"
+            />
           </div>
           <div className="d-none d-lg-flex col-lg-6 justify-content-end">
-            <Logo logo={abc} className={`${styles['logo-abc']} img-fluid`} fallbackAlt="Logo ABC" />
+            <Logo
+              logo={abc}
+              className={`${styles['logo-abc']} img-fluid`}
+              fallbackAlt="Logo ABC"
+            />
           </div>
         </div>
       </div>
 
       {/* Navbar */}
-      <Navbar expand="lg" className={styles['menu-navbar']} style={{ overflow: 'visible' }}>
-        <Container fluid className="px-3 px-md-4 px-xl-5" style={{ overflow: 'visible' }}>
+      <Navbar
+        expand="lg"
+        className={styles['menu-navbar']}
+        style={{ overflow: 'visible' }}
+      >
+        <Container
+          fluid
+          className="px-3 px-md-4 px-xl-5"
+          style={{ overflow: 'visible' }}
+        >
           {/* Toggle + ABC (mobile) */}
           <div className="d-flex align-items-center">
             <Navbar.Toggle aria-controls={NAV_ID} />
             <div className="d-lg-none ms-3 flex-shrink-1">
-              <Logo logo={abc} className={styles['logo-abc']} fallbackAlt="Logo ABC" />
+              <Logo
+                logo={abc}
+                className={styles['logo-abc']}
+                fallbackAlt="Logo ABC"
+              />
             </div>
           </div>
 
@@ -106,7 +151,9 @@ export default function HeaderView({ logos = {}, menuItems = [], alerta }) {
               method="get"
               onSubmit={handleSearchSubmit}
             >
-              <label htmlFor="site-search-desktop" className="visually-hidden">Buscar contenido</label>
+              <label htmlFor="site-search-desktop" className="visually-hidden">
+                Buscar contenido
+              </label>
               <div className={styles['buscador-box']}>
                 <input
                   id="site-search-desktop"
@@ -145,7 +192,9 @@ export default function HeaderView({ logos = {}, menuItems = [], alerta }) {
           method="get"
           onSubmit={handleSearchSubmit}
         >
-          <label htmlFor="site-search-mobile" className="visually-hidden">Buscar contenido</label>
+          <label htmlFor="site-search-mobile" className="visually-hidden">
+            Buscar contenido
+          </label>
           <div className={styles['buscador-box']}>
             <input
               id="site-search-mobile"
@@ -173,7 +222,6 @@ export default function HeaderView({ logos = {}, menuItems = [], alerta }) {
         </form>
 
         <div className={`mt-3 ${styles.headerRedes}`}>
-          {/* ⬇️ Nuevo: fuerza formato cuadrado y centrado en mobile */}
           <RedesSociales variant="header" className={styles.redesInline} />
         </div>
       </div>

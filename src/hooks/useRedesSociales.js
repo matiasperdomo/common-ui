@@ -50,10 +50,8 @@ export function useRedesSociales(opts = {}) {
             const rawLink = first(item.redes_enlace) || '';
             const enlace = rawLink ? toHref(rawLink) : null;
 
-            const alt =
-              first(item.redes_img_alt) ||
-              first(item.redes_img_tit) ||
-              'Red social';
+            // Si el endpoint trae alt, se usa; si no, alt decorativo ''
+            const alt = first(item.redes_img_alt) || first(item.redes_img_tit) || '';
 
             const order = Number(first(item.delta)) || idx;
 
