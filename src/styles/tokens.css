@@ -236,8 +236,8 @@ a:hover, a:focus { color: var(--bs-link-hover-color); text-decoration: underline
 
 /* ---- Normalización de headings ---- */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-sans);
-  color: var(--heading-color);
+  font-family: var(--font-sans) !important;
+  color: var(--heading-color) !important;
   margin-block: 0.75em 0.4em;      /* margen coherente vertical */
   line-height: var(--h-tight);
   letter-spacing: var(--h-letter-tight);
