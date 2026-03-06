@@ -82,7 +82,7 @@
   --bs-body-font-family:   var(--bs-font-sans-serif);
   --bs-body-color:         var(--text-color);
   --bs-link-color:         var(--link-color);
-  --bs-link-hover-color:   var(--link-color); 
+  --bs-link-hover-color:   var(--link-color-inverse); 
 }
 
 /* =========================
