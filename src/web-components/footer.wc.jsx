@@ -28,6 +28,6 @@ class AppFooter extends HTMLElement {
   }
 }
 
-if (!customElements.get('app-footer')) {
-  customElements.define('app-footer', AppFooter);
+if (!customElements.get('abc-footer')) {
+  customElements.define('abc-footer', AppFooter);
 }

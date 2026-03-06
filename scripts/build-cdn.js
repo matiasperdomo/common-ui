@@ -1,8 +1,8 @@
 /**
  * Build script para generar los bundles CDN (IIFE autocontenidos).
  * Genera cuatro archivos en dist/cdn/:
- *   - header.js     → solo <app-header>
- *   - footer.js     → solo <app-footer>
+ *   - header.js     → solo <abc-header>
+ *   - footer.js     → solo <abc-footer>
  *   - common-ui.js  → componentes + utilidades como window.CommonUI (recomendado)
  *   - utils.js      → solo utilidades como window.CommonUI (sin Web Components)
  *

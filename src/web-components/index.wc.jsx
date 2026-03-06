@@ -3,7 +3,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../globals.js';
+import '../styles/tokens.css';
+import { ensureEncodeSans } from '../utils/fonts.js';
+ensureEncodeSans();
 import Header from '../components/header/Header.jsx';
 import Footer from '../components/footer/Footer.jsx';
 
@@ -41,8 +43,8 @@ class AppFooter extends HTMLElement {
   }
 }
 
-if (!customElements.get('app-header')) customElements.define('app-header', AppHeader);
-if (!customElements.get('app-footer')) customElements.define('app-footer', AppFooter);
+if (!customElements.get('abc-header')) customElements.define('abc-header', AppHeader);
+if (!customElements.get('abc-footer')) customElements.define('abc-footer', AppFooter);
 
 // Utilidades expuestas como window.CommonUI.xxx
 export { formatFechaLongEs, formatFechaLargoES } from '../utils/dates.js';
