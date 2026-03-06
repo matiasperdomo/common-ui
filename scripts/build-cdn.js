@@ -35,6 +35,9 @@ for (const [i, { entry, fileName, name }] of components.entries()) {
   await build({
     configFile: false, // ignorar vite.config.js del proyecto
     plugins: [react(), cssInjectedByJsPlugin()],
+    define: {
+      'process.env.NODE_ENV': '"production"',
+    },
     build: {
       outDir: 'dist/cdn',
       emptyOutDir: i === 0,
