@@ -61,6 +61,24 @@
 
 .menu-navbar :global(.dropdown-menu) {
   border: 0px;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 200ms ease, transform 200ms ease;
+  pointer-events: none;
+}
+
+.menu-navbar :global(.dropdown-menu.show) {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Desktop: fuerza display:block para que la transition CSS funcione.
+   Bootstrap alterna display:none/block, lo que cancela cualquier animación. */
+@media (min-width: 992px) {
+  .menu-navbar :global(.dropdown-menu) {
+    display: block !important;
+  }
 }
 /* Hover / focus */
 .menu-navbar :global(.navbar-nav) :global(.nav-link:hover),
@@ -91,6 +109,7 @@
 /* 4) Buscador */
 .buscador {
   margin-left: auto;
+  padding: 0.5rem;
   display: flex;
   align-items: center;
   max-width: 100%;
@@ -190,7 +209,7 @@
   .menu-navbar :global(.dropdown-menu .dropdown-item:focus) {
     background-color: rgba(0,154,174,.10);
     color: var(--link-color, #009AAE);
-    text-decoration: underline;
+    text-decoration: none;
   }
 }
 
@@ -280,17 +299,38 @@
   .logo-provincia {
     max-width: 60%;
   }
+
   .logo-abc {
     margin-right: 40px;
   }
+
   .menu-navbar {
     border-bottom: 1px solid var(--header-divider-color);
   }
+
   .buscador-box {
     max-width: 90%;
     float: right;
   }
+
   .menu-navbar :global(.dropdown-menu) {
+    display: block !important;
     border: var(--bs-dropdown-border-width) solid var(--bs-dropdown-border-color);
+  }
+
+  /* ✅ Hover uniforme para TODOS los items nivel 1 */
+  .menu-navbar :global(.navbar-nav > .nav-item > .nav-link:hover),
+  .menu-navbar :global(.navbar-nav > .nav-item > .nav-link:focus),
+  .menu-navbar :global(.navbar-nav > .nav-item > .dropdown-toggle:hover),
+  .menu-navbar :global(.navbar-nav > .nav-item > .dropdown-toggle:focus) {
+    background-color: var(--link-color, #009AAE);
+    color: #fff !important;
+    text-decoration: none;
+  }
+
+  /* Asegura que el fondo cubra bien */
+  .menu-navbar :global(.navbar-nav > .nav-item > .nav-link),
+  .menu-navbar :global(.navbar-nav > .nav-item > .dropdown-toggle) {
+    display: block;
   }
 }
