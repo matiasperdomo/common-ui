@@ -1,0 +1,60 @@
+/**
+ * Build script para generar los bundles CDN (IIFE autocontenidos).
+ * Genera tres archivos en dist/cdn/:
+ *   - header.js     → solo <app-header>
+ *   - footer.js     → solo <app-footer>
+ *   - common-ui.js  → todos los componentes (recomendado)
+ *
+ * Uso: node scripts/build-cdn.js
+ */
+import { build } from 'vite';
+import react from '@vitejs/plugin-react';
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
+
+const components = [
+  {
+    entry: 'src/web-components/header.wc.jsx',
+    fileName: 'header',
+    name: 'CommonUI_header',
+  },
+  {
+    entry: 'src/web-components/footer.wc.jsx',
+    fileName: 'footer',
+    name: 'CommonUI_footer',
+  },
+  {
+    entry: 'src/web-components/index.wc.jsx',
+    fileName: 'common-ui',
+    name: 'CommonUI',
+  },
+];
+
+for (const [i, { entry, fileName, name }] of components.entries()) {
+  console.log(`\n→ Building ${fileName}.js...`);
+
+  await build({
+    configFile: false, // ignorar vite.config.js del proyecto
+    plugins: [react(), cssInjectedByJsPlugin()],
+    build: {
+      outDir: 'dist/cdn',
+      emptyOutDir: i === 0,
+      lib: {
+        entry,
+        name,
+        formats: ['iife'],
+        fileName: () => `${fileName}.js`,
+      },
+      rollupOptions: {
+        // Sin externales: todo bundleado (React, Bootstrap, etc.)
+        external: [],
+        output: {
+          globals: {},
+        },
+      },
+    },
+  });
+
+  console.log(`✓ dist/cdn/${fileName}.js`);
+}
+
+console.log('\n✅ CDN build completo → dist/cdn/');
