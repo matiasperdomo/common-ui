@@ -43,3 +43,11 @@ class AppFooter extends HTMLElement {
 
 if (!customElements.get('app-header')) customElements.define('app-header', AppHeader);
 if (!customElements.get('app-footer')) customElements.define('app-footer', AppFooter);
+
+// Utilidades expuestas como window.CommonUI.xxx
+export { formatFechaLongEs, formatFechaLargoES } from '../utils/dates.js';
+export { getYouTubeId, getYouTubeEmbedUrl, getYouTubeThumbUrl } from '../utils/youtube.js';
+export { toAbsolute, toHref, normalizeDrupalFileUrl } from '../utils/drupal.js';
+export { buildApiUrl, setApiBase } from '../utils/api.js';
+export { ensureEncodeSans, ensureIconFontAwesome } from '../utils/fonts.js';
+export * from '../utils/slug.js';

@@ -1,9 +1,10 @@
 /**
  * Build script para generar los bundles CDN (IIFE autocontenidos).
- * Genera tres archivos en dist/cdn/:
+ * Genera cuatro archivos en dist/cdn/:
  *   - header.js     → solo <app-header>
  *   - footer.js     → solo <app-footer>
- *   - common-ui.js  → todos los componentes (recomendado)
+ *   - common-ui.js  → componentes + utilidades como window.CommonUI (recomendado)
+ *   - utils.js      → solo utilidades como window.CommonUI (sin Web Components)
  *
  * Uso: node scripts/build-cdn.js
  */
@@ -25,6 +26,11 @@ const components = [
   {
     entry: 'src/web-components/index.wc.jsx',
     fileName: 'common-ui',
+    name: 'CommonUI',
+  },
+  {
+    entry: 'src/web-components/utils.entry.js',
+    fileName: 'utils',
     name: 'CommonUI',
   },
 ];
