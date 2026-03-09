@@ -1,6 +1,5 @@
 node_modules/
 dist/
-!dist/cdn/
 .vscode/
 .idea/
 .env

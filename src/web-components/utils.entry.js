@@ -1,6 +1,3 @@
-// Bundle CDN solo de utilidades (sin Web Components).
-// Se expone como window.CommonUI en el navegador.
-// Carga también los estilos (tokens.css) y la tipografía (Encode Sans).
 import '../globals.js';
 
 export { formatFechaLongEs, formatFechaLargoES } from '../utils/dates.js';

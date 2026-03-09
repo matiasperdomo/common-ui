@@ -28,7 +28,7 @@ for (const [i, { entry, fileName, name }] of components.entries()) {
   console.log(`\n→ Building ${fileName}.js...`);
 
   await build({
-    configFile: false, // ignorar vite.config.js del proyecto
+    configFile: false,
     plugins: [react(), cssInjectedByJsPlugin()],
     define: {
       'process.env.NODE_ENV': '"production"',
@@ -43,7 +43,6 @@ for (const [i, { entry, fileName, name }] of components.entries()) {
         fileName: () => `${fileName}.js`,
       },
       rollupOptions: {
-        // Sin externales: todo bundleado (React, Bootstrap, etc.)
         external: [],
         output: {
           globals: {},
@@ -55,7 +54,7 @@ for (const [i, { entry, fileName, name }] of components.entries()) {
   console.log(`✓ dist/cdn/${fileName}.js`);
 }
 
-console.log('\n✅ CDN build completo → dist/cdn/');
+console.log('\n CDN build completo → dist/cdn/');
 
 // Copiar assets estáticos
 mkdirSync('dist/cdn', { recursive: true });
