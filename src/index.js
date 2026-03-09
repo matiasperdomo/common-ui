@@ -11,7 +11,6 @@ export { default as PageSplit } from './components/layout/page-split/PageSplit.j
 export { default as PageBreadcrumb } from './components/header/PageBreadcrumb.jsx';
 
 export { toAbsolute, toHref, normalizeDrupalFileUrl } from './utils/drupal.js';
-export { default as iconPba } from './img/icon-pba.ico';
 export { buildApiUrl, normalizeApiError, ApiError } from './utils/api.js';
 
 export { getYouTubeId, getYouTubeEmbedUrl, getYouTubeThumbUrl } from './utils/youtube.js';
