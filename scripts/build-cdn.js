@@ -11,6 +11,7 @@
 import { build } from 'vite';
 import react from '@vitejs/plugin-react';
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
+import { copyFileSync, mkdirSync } from 'fs';
 
 const components = [
   {
@@ -67,3 +68,8 @@ for (const [i, { entry, fileName, name }] of components.entries()) {
 }
 
 console.log('\n✅ CDN build completo → dist/cdn/');
+
+// Copiar assets estáticos
+mkdirSync('dist/cdn', { recursive: true });
+copyFileSync('src/img/icon-pba.ico', 'dist/cdn/icon-pba.ico');
+console.log('✓ dist/cdn/icon-pba.ico');
