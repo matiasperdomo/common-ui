@@ -1,8 +1,6 @@
 /**
  * Build script para generar los bundles CDN (IIFE autocontenidos).
- * Genera cuatro archivos en dist/cdn/:
- *   - header.js     → solo <abc-header>
- *   - footer.js     → solo <abc-footer>
+ * Genera dos archivos en dist/cdn/:
  *   - common-ui.js  → componentes + utilidades como window.CommonUI (recomendado)
  *   - utils.js      → solo utilidades como window.CommonUI (sin Web Components)
  *
@@ -14,16 +12,6 @@ import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 import { copyFileSync, mkdirSync } from 'fs';
 
 const components = [
-  {
-    entry: 'src/web-components/header.wc.jsx',
-    fileName: 'header',
-    name: 'CommonUI_header',
-  },
-  {
-    entry: 'src/web-components/footer.wc.jsx',
-    fileName: 'footer',
-    name: 'CommonUI_footer',
-  },
   {
     entry: 'src/web-components/index.wc.jsx',
     fileName: 'common-ui',
