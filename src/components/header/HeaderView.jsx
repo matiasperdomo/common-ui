@@ -45,7 +45,7 @@ function useIsLgUp() {
 }
 
 function handleSearchSubmit(e) {
-  const q = e.currentTarget.elements.q?.value?.trim();
+  const q = e.currentTarget.elements.query?.value?.trim();
   if (!q) e.preventDefault();
 }
 
@@ -147,7 +147,7 @@ export default function HeaderView({
             <form
               role="search"
               className={`d-none d-lg-block ${styles['buscador']} ms-lg-4`}
-              action="/buscar"
+              action="https://abc.gob.ar/buscador"
               method="get"
               onSubmit={handleSearchSubmit}
             >
@@ -157,7 +157,7 @@ export default function HeaderView({
               <div className={styles['buscador-box']}>
                 <input
                   id="site-search-desktop"
-                  name="q"
+                  name="query"
                   type="search"
                   placeholder="Buscar contenido"
                   aria-label="Buscar contenido en el sitio"
@@ -188,7 +188,7 @@ export default function HeaderView({
         <form
           role="search"
           className={`${styles['buscador']} mt-3`}
-          action="/buscar"
+          action="https://abc.gob.ar/buscador"
           method="get"
           onSubmit={handleSearchSubmit}
         >
@@ -198,7 +198,7 @@ export default function HeaderView({
           <div className={styles['buscador-box']}>
             <input
               id="site-search-mobile"
-              name="q"
+              name="query"
               type="search"
               placeholder="Buscar contenido"
               aria-label="Buscar contenido en el sitio"
